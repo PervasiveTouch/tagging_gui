@@ -363,9 +363,6 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(widget)
 
-    def load_image(self):
-        pass
-
     def load_tags(self, tags : dict):
         #self.list_tags.addItems(tags)
         for item in tags.items():
