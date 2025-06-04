@@ -5,7 +5,7 @@ import json
 
 from PyQt6.QtCore import QSize, Qt, QSize, QMargins
 from PyQt6.QtGui import QImage, QPalette, QPixmap,QStandardItem, QStandardItemModel, QFont
-from PyQt6.QtWidgets import QWidget, QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QGroupBox, QPushButton, QScrollArea, QLabel, QLineEdit, QListWidget, QListWidgetItem, QAbstractItemView, QProgressBar, QPlainTextEdit, QTabWidget, QListView, QStyle
+from PyQt6.QtWidgets import QWidget, QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QGroupBox, QPushButton, QScrollArea, QLabel, QLineEdit, QListWidget, QListWidgetItem, QAbstractItemView, QProgressBar, QPlainTextEdit, QTabWidget, QListView, QStyle, QMessageBox
 
 start_index = 0
 annotator = 'N.N.'
@@ -37,6 +37,8 @@ TEXT_ASSIGNED = 'Zugewiesen'
 TEXT_CLEAR_SEARCH_BAR = 'Zurücksetzen'
 TEXT_DESCRIPTION = 'Tag-Beschreibung'
 TEXT_REMOVE = 'Entfernen'
+TEXT_COMPLETED_MENUBAR = 'Fertig!'
+TEXT_COMPLETED = 'Annotationsprozess erfolgreich abgeschlossen. Das Programm wird nun sicher beendet.'
 
 # icon list: https://www.pythonguis.com/faq/built-in-qicons-pyqt/
 # ICON_REMOVE = 'SP_TitleBarCloseButton'
@@ -53,6 +55,8 @@ ASSIGNED_LIST_MARGINS = QMargins(0, 0, 0, 0)
 PATH_TAG_DICT = 'tag_descriptions.json'
 PATH_DEVICE_DATA = 'full_devices_data.csv'
 PATH_IMAGE_BASE = '../all_images'
+
+FINISHED_INDICATOR = 'FINISHED'
 
 def read_tags():
     tag_dict = {}
@@ -79,6 +83,8 @@ class DataModel():
         return result
 
     def get_next_device(self):
+        if self.index == self.total_device_count:
+            return FINISHED_INDICATOR
         result = self.get_device_by_index(self.index)
         self.index += 1
         return result
@@ -407,14 +413,28 @@ class MainWindow(QMainWindow):
     def load_next_device(self):
         self.start_time = datetime.datetime.now()
         data = self.model.get_next_device()
-        self.label_text_positive.setText(str(data['positive_text']))
-        self.label_text_negative.setText(str(data['negative_text']))
-        self.label_text_other.setText(str(data['other_text']))
-        self.img_path = data['img_path']
-        self.update_image(f'{PATH_IMAGE_BASE}/{self.img_path}')
-        #print(data)
-        self.update_device_count()
-        self.update_device_type(data['device_type'])
+
+        if data != FINISHED_INDICATOR:
+            self.label_text_positive.setText(str(data['positive_text']))
+            self.label_text_negative.setText(str(data['negative_text']))
+            self.label_text_other.setText(str(data['other_text']))
+            self.img_path = data['img_path']
+            self.update_image(f'{PATH_IMAGE_BASE}/{self.img_path}')
+            #print(data)
+            self.update_device_count()
+            self.update_device_type(data['device_type'])
+        else:
+            self.show_completed_dialog()
+
+    def show_completed_dialog(self):
+        finished_dialog = QMessageBox(self)
+        finished_dialog.setWindowTitle(TEXT_COMPLETED_MENUBAR)
+        finished_dialog.setText(TEXT_COMPLETED)
+        finished_dialog.setIcon(QMessageBox.Icon.Information)
+        finished_dialog_button = finished_dialog.exec()
+
+        if finished_dialog_button == QMessageBox.StandardButton.Ok:
+            sys.exit()
 
     def deselect_tag(self, tag):
         #print(tag)
