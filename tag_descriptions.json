@@ -32,7 +32,7 @@
  "usability:system-state-unclear": "Systemzustand ist unklar, z.B. ob eine Spülmaschine gerade läuft oder nicht.",
  "usability:unintentional-input": "Unabsichtliche Bedienung des Geräts wird erwähnt, z.B. das versehentliche Verstellen von Funktionen.",
  "design:capacity-large": "Gerät hat große Kapazität, z.B. eine Kaffeemaschine mit großem Wassertank.",
- "UX:usage-pleasant": "Bedienung fühlt sich gut an.",
+ "UX:usage-pleasant": "Gerät wird gerne benutzt.",
  "usability:bad-haptics": "Schlechte Haptik, z.B. Tasten lassen sich nicht erfühlen oder man muss fester drücken als erwartet.",
  "usability:system-state-clear": "Systemzustand ist jederzeit klar.",
  "UX:usage-frustrating": "Bedienung des Geräts ist frustrierend.",
